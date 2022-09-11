@@ -30,6 +30,17 @@ func getMovies(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(movies)
 }
 
+func deleteMovie(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)  // this is to get the params from a request; it holds it in some sort of map, so you access id like params["id"]
+	for index, item := range movies {
+		if item.ID == params["id"] {
+			movies = append(movies[:index], movies[index+1:]...)  // this is the way you delete from a slice in Go; you basically join slices of the original slice
+			break
+		}
+	}
+}
+
 func main(){
 	r := mux.NewRouter()
 
