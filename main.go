@@ -53,7 +53,14 @@ func getMovie(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-
+func createMovie(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	var movie Movie
+	_ = json.NewDecoder(r.Body).Decode(&movie) // decoding the json response in the body and passing into the memory address of the movie variable
+	movie.ID = strconv.Itoa(rand.Intn(100000))
+	movies = append(movies, movie)
+	json.NewEncoder(w).Encode(movie)
+}
 
 func main(){
 	r := mux.NewRouter()
