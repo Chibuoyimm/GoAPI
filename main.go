@@ -25,9 +25,16 @@ type Director struct{
 
 var movies []Movie
 
+func getMovies(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json") // this is to set the header of the response to json
+	json.NewEncoder(w).Encode(movies)
+}
+
 func main(){
 	r := mux.NewRouter()
 
+	movies = append(movies, Movie{ID: "1", Isbn: "428231", Title: "Movie one", Director: &Director{Firstname: "Cactus", Lastname: "Jack"}}) // creating a bunch of dummy movies
+	movies = append(movies, Movie{ID: "2", Isbn: "430452", Title: "Movie two", Director: &Director{Firstname: "Chibuoyim", Lastname: "Onuigwe"}})
 	r.HandleFunc("/movies", getMovies).Methods("GET")
 	r.HandleFunc("/movies/{id}", getMovie).Methods("GET")
 	r.HandleFunc("/movies", createMovie).Methods("POST")
@@ -35,5 +42,5 @@ func main(){
 	r.HandleFunc("/movies/{id}", deleteMovie).Methods("DELETE")
 
 	fmt.Println("Starting server at port 8000")
-	log.Fatal(http.ListenAndServe(":8000"))
+	log.Fatal(http.ListenAndServe(":8000", r))  // this logs an error with starting up the server, if there is one
 }
